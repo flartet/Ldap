@@ -33,6 +33,19 @@ class Directory {
 	protected $filterAttribute;
 
 	/**
+	 * Set of the base filters
+	 *
+	 * @var array
+	 */
+	protected $namedBaseFilters ;
+
+	/**
+	 * Current name of the base filter to use
+	 *
+	 * @var array
+	 */
+	protected $currentFilterName ;
+	/**
 	 * Boolean Operator
 	 *
 	 * @var string
@@ -109,6 +122,18 @@ class Directory {
 				throw new \Exception('Auth takes Login and Password as parameters');
 			}
 			return $this->auth($parameters[0], $parameters[1]);
+		}
+		elseif ($method == 'setNameBasedFilters') {
+			if (count($parameters) !== 1) {
+				throw new \Exception('One associative array with the named filters required');
+			}
+			return $this->setNameBasedFilters($parameters[0]);
+		}
+		elseif ($method == 'useNamedFilter') {
+			if (count($parameters) !== 1) {
+				throw new \Exception('Name of a previously set filter required');
+			}
+			return $this->useNamedFilter($parameters[0]);
 		}
 		else {
 			throw new \Exception("This function is not implemented (Yet ?).");
@@ -215,6 +240,44 @@ class Directory {
 		$this->booleanOperator = '|';
 		$this->where($attribute, $search);
 	}
+
+	/**
+	 * Register a set of named filters
+	 *
+	 * @var array  $filters
+	 **/
+public function setNameBasedFilters($filters) {
+		$this->namedBaseFilters = $filters;
+}
+
+/**
+ * Add a base filter
+ *
+ * @var array  $filters
+ **/
+public function addNameBasedFilters($filters) {
+	if (isset($this->namedBaseFilters)) {
+		array_merge($this->namedBaseFilters, $filters);
+	}
+	else {
+		$this->setNameBasedFilters($filters);
+	}
+}
+
+/**
+ * Set the named filter name to use as base filter
+ *
+ * @var string  $filterName
+ **/
+public function useNamedFilter($filterName) {
+	if ((isset($this->namedBaseFilters[$filterName]) || ($filterName == null)) {
+		$this->currentFilterName = $filterName;
+		return true;
+	}
+	return false;
+}
+
+
 
 	/************************************************/
 	/************** Protected methods ***************/
@@ -393,6 +456,10 @@ class Directory {
 		}
 		$filter .= ')';
 
+		if (isset($this->currentFilterName)) {
+			$filter = preg_replace('/'.$this->getConfig('named_base_filter_key').'/', $filter, $this->namedBaseFilters[$this->currentFilterName]);
+		}
+
 		$attributes = $this->getConfigAttributes();
 		$key = $this->getConfig('key');
 
@@ -450,7 +517,7 @@ class Directory {
 		if(count($this->results) == 1 && count($this->attributes) == 1) {
 			$attr = $this->attributes[0];
 			$result = array_shift($this->results);
-			
+
 			if (!array_key_exists($attr, $result)) return false;
 
 			return $this->format($result[$attr]);
