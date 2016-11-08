@@ -270,7 +270,7 @@ public function addNameBasedFilters($filters) {
  * @var string  $filterName
  **/
 public function useNamedFilter($filterName) {
-	if ((isset($this->namedBaseFilters[$filterName]) || ($filterName == null)) {
+	if ((isset($this->namedBaseFilters[$filterName])) || ($filterName == null)) {
 		$this->currentFilterName = $filterName;
 		return true;
 	}
