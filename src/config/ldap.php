@@ -83,6 +83,17 @@ return [
     */
 
     'filter'        => 'login',
+    
+    /*
+    |--------------------------------------------------------------------------
+    | The key used for replacement in the named base filters.
+    | There is not great interest in modfying it
+    | You must declare your base filters with this key
+    | ex : (&(objectClass=inetOrgPerson)#filters#)
+    |--------------------------------------------------------------------------
+    */
+    'named_base_filter_key' => '#filters#',
+
 
     /*
     |--------------------------------------------------------------------------
