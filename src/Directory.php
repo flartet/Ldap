@@ -123,11 +123,11 @@ class Directory {
 			}
 			return $this->auth($parameters[0], $parameters[1]);
 		}
-		elseif ($method == 'setNameBasedFilters') {
+		elseif ($method == 'setNamedBaseFilters') {
 			if (count($parameters) !== 1) {
 				throw new \Exception('One associative array with the named filters required');
 			}
-			return $this->setNameBasedFilters($parameters[0]);
+			return $this->setNamedBaseFilters($parameters[0]);
 		}
 		elseif ($method == 'useNamedFilter') {
 			if (count($parameters) !== 1) {
@@ -246,7 +246,7 @@ class Directory {
 	 *
 	 * @var array  $filters
 	 **/
-public function setNameBasedFilters($filters) {
+public function setNamedBaseFilters($filters) {
 		$this->namedBaseFilters = $filters;
 }
 
@@ -255,7 +255,7 @@ public function setNameBasedFilters($filters) {
  *
  * @var array  $filters
  **/
-public function addNameBasedFilters($filters) {
+public function addNamedBaseFilters($filters) {
 	if (isset($this->namedBaseFilters)) {
 		array_merge($this->namedBaseFilters, $filters);
 	}
